@@ -13,6 +13,7 @@ import json
 # English
 # https://docs.python.org/3/library/os.path.html
 # https://www.w3schools.com/python/python_json.asp
+
 ######################################################################################################
 
 # os module
@@ -20,12 +21,10 @@ import json
 
 """
 We're gonna focus on:
-
 os.path.join()
 os.path.exists()
 os.makedirs()
 os.listdir()
-
 """
 
 # joining paths with os.path.join
@@ -87,10 +86,10 @@ def read_file(path, file_name=""):
 #
 # save
 dummy_content = "This is a test, of what you can do with os module.\nTry it out by yourself.\n\n2019"
-save_file(path=PATH, file_name="dummie.txt", content=dummy_content)
+save_file(path=PATH, file_name="dummy.txt", content=dummy_content)
 
 # read
-data = read_file(path=PATH, file_name="dummie.txt")
+data = read_file(path=PATH, file_name="dummy.txt")
 print(data)
 
 ######################################################################################################
@@ -159,63 +158,82 @@ def restore_scene_object_transformation(os_path='', file_name=''):
 ######################################################################################################
 # do it!
 all_transform = mc.ls(type="transform")
+USER_PROFILE = os.environ["USERPROFILE"]
 PATH = os.path.join(USER_PROFILE, "Documents", "maya", "positionLib")
 FILE_NAME = "scene_001"
 store_scene_object_transformation(object_list=all_transform, os_path=PATH, file_name=FILE_NAME)
 #
 #
 restore_scene_object_transformation(os_path=PATH, file_name=FILE_NAME)
-
-######################################################################################################
-# Part II : Maya commands UI development
 #
-def ui_initialize(data_path = ""):
+def ui_initialize_02(data_path=''):
     if not data_path or not os.path.exists(data_path):
-        mc.error("There is a problem with the path provided, please check it and try again")
+        mc.error("There is a problem with the path provided, please check this and try again")
         return
 
-    def on_save(widget=""):
-        all_transform = mc.ls(type="transform")
-        file_name = mc.textField(widget, q=True, text=True)
+    def clearList(option_menu=None):
+        menuItems = mc.optionMenu(option_menu, q=True, itemListLong=True)  # itemListLong returns the children
+        if menuItems:
+            mc.deleteUI(menuItems)
+
+
+    def load_menu_items(widget=None):
+        clearList(widget)
+        files = os.listdir(data_path)
+        #
+        for file in files:
+            label_name = file.replace(".json", "")
+            mc.menuItem(label=label_name, parent=widget)
+
+    def on_save(widget=None, option_menu_widget=None):
+        transform_nodes = mc.ls(type="transform")
+        file_name = mc.textField(widget, query=True, text=True)
         #
         if not file_name:
+            mc.warning("Must give a valid file name")
             return
-        #
-        store_scene_object_transformation(object_list=all_transform, os_path=data_path, file_name=file_name)
-        mc.textField(widget, edit=True, text="")
 
-    def on_load(widget=''):
-        current_item = mc.optionMenu(widget, q=True, value=True)
-        if not current_item:
-            return
+        store_scene_object_transformation(object_list=transform_nodes, os_path=data_path,file_name=file_name)
+        mc.textField(widget, edit=True, text="")
+        load_menu_items(widget=option_menu_widget)
+        print("Pose Successfully Saved")
+
+    def on_load(widget=None):
+        current_item = mc.optionMenu(widget, query=True, value=True)
         #
-        file_name = current_item.replace(".json", "")
-        restore_scene_object_transformation(os_path=PATH, file_name=file_name)
+        if not current_item:
+            mc.warning("No items to load")
+            return
+
+        restore_scene_object_transformation(os_path=data_path, file_name=current_item)
+        print("Pose Successfully Loaded")
 
 
     win_name = "Sample_window"
-
+    #
     if mc.window(win_name, exists=True):
         mc.deleteUI(win_name)
 
-    window = mc.window(win_name, title="Scene Snapshot Tool", sizeable=True, width=400, retain=False, resizeToFitChildren=True)
+    window = mc.window(win_name, title="Scene Snapshot Tool", sizeable=False, width=400, height=250,
+                       retain=False, resizeToFitChildren=True)
+
     layout = mc.columnLayout(adjustableColumn=True, parent=window, rowSpacing=15)
-    mc.text(label="Path To Store Data:", p=layout, align="left", font="boldLabelFont")
-    mc.textField(p=layout, text=data_path, editable=False)
-    mc.text(label="Save Version:", p=layout, align="left", font="boldLabelFont")
-    ver_widget = mc.textField(p=layout, editable=True)
-    save_btn = mc.button("Save", parent=layout, command=lambda x: on_save(widget=ver_widget))
+    mc.text(label="Path To Stored Data:", p=layout, align="left", font="boldLabelFont")
+    mc.textField(parent=layout, text=data_path, editable=False)
+    mc.text(label="Version Name:", parent=layout, align="left", font="boldLabelFont")
     #
-    opt_menu = mc.optionMenu("UI_version_loader_menu", w=250, label="Load Version:", parent=layout)
+    save_txt_field =  mc.textField(parent=layout)
+    save_button = mc.button("Save", parent=layout)
+    #
+    opt_menu = mc.optionMenu("UI_version_loader_menu", w=250, label="Load Version", parent=layout)
+    load_button = mc.button("Load", parent=layout, command=lambda x: on_load(widget=opt_menu))
 
-    for item in os.listdir(data_path):
-        mc.menuItem(label=item, p=opt_menu)
-
-    load_btn  = mc.button("Load", parent=layout, command=lambda x: on_load(widget=opt_menu))
+    load_menu_items(widget=opt_menu)
+    mc.button(save_button, edit=True, command=lambda x: on_save(widget=save_txt_field, option_menu_widget=opt_menu))
 
     # show the UI window now
     mc.showWindow(window)
 
-ui_initialize(data_path=PATH)
+ui_initialize_02(data_path=PATH)
 
-######################################################################################################
+

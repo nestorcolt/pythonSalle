@@ -1,6 +1,7 @@
+from string import ascii_lowercase
+
 # Review Lesson
 # Operation over string - list and dictionaties
-
 
 # -------------------------------------------------------------------------------------------------
 string_example = "aveces caminamos juntos"
@@ -128,5 +129,111 @@ print(min(abc))
 
 #
 # --------------------------------------------------------------------------
+# Dictionaries
+
 # empty:
 my_dictionary = {}
+
+# fill a dict
+my_dictionary["clave"] = "value"
+print(my_dictionary)
+
+# iterate over a list and fill dict with data
+new_dict = {}
+for idx, letter in enumerate(ascii_lowercase): # enumerate returns a index number with current iteration
+    new_dict[letter] = idx
+
+# print(new_dict)
+
+for key, val in new_dict.items():
+    print("Letter: {} -- IndexValue: {}".format(key, val))
+
+# accessing to elements from a dictionary
+j_letter_index =  new_dict["j"]
+print(j_letter_index)
+
+get_j_letter_index = new_dict.get("j", None)
+print(get_j_letter_index)
+
+# getting non existent elements in a dict
+any_value = new_dict["A"] # error if key doesn't exist in dictionary (stop code execution)
+print(any_value)
+
+any_value = new_dict.get("A", None) # return what has been passed as second argument if key doesn't exists
+print(any_value)
+
+if any_value is None:
+    print(False)
+
+# -------------------------------------------------------
+
+# Functions and Returns
+def add_int(a=0, b=0):
+    try:
+        result =  a + b
+        return result
+    #
+    except:
+        return False
+#
+sumNums = add_int()
+print(sumNums)
+
+# ---------------------------------------------------------
+# concatenation or (concatenacion)
+# string concatenation
+string_001 = "L" + "_" + "arm" + "_" + "CTL"
+print(string_001)
+#
+upperArmControl = "L_upperArm" + "_CTL"
+print(upperArmControl)
+
+arm = 'upperArm'
+prefix = 'L'
+suffix = 'CTL'
+
+# option 1
+armControlName = prefix + "_" + arm + "_" + suffix
+print(armControlName)
+
+# option 2 (** RECOMENDED **)
+armControlName = "{}_{}_{}".format(prefix, arm, suffix)
+print(armControlName)
+
+# option 3
+armControlName = "_".join([prefix, arm, suffix])
+print(armControlName)
+
+# List concatenation
+abc_001 = ["a", "b", "c", "d"]
+abc_002 = ["e", "f", "g", "h"]
+
+concatenated_list = abc_001 + abc_002
+print(concatenated_list)
+
+concatenated_list = abc_002 + abc_001
+print(concatenated_list)
+
+# concatenated_list.sort()
+# print(concatenated_list)
+#
+# sorting, concatenating and enumerating list in a for loop
+upper_letters = []
+lower_letters = []
+#
+for letter in sorted(abc_002 + abc_001):
+    upper_letters.append(letter.upper())
+    lower_letters.append(letter)
+#
+print(upper_letters)
+print(lower_letters)
+# 
+print(len(upper_letters), len(lower_letters))
+
+# 
+for index, (a, b)in enumerate(zip(lower_letters, upper_letters)):
+    print(index, a, b)
+
+# ------------------------------------------------------------------------------------------
+
+

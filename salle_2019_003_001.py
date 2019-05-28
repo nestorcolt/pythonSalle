@@ -7,17 +7,16 @@ string_var = "sometimes we walk together"
 list_var = ["a", "b", "c", "d", "e", "f", "g", "h", "i"]
 
 # indexing / slicing review
-print(string_var[5])
-print(list_var[5])
-
+print(string_var[0])
+print(list_var[-1])
 #
 print(string_var[0:9])
 print(list_var[2:-1])
 
-
 # strings --------------------------------------------------------------
 # replace string
-replaced_word = string_var.replace("sometimes", "always")
+
+replaced_word = string_var.replace("sometimes", "Always")
 #
 control_name = "L_upperArm_CTL"
 joint_name = control_name.replace("_CTL", "_JNT")
@@ -25,13 +24,15 @@ print(control_name, joint_name)
 
 # startswith
 check = control_name.startswith("L_")
-#
+# print(check)
 if check:
     print(True)
 else:
     print(False)
 
 # endswith
+# endswith
+
 if control_name.endswith("CTL"):
     print(control_name)
 else:
@@ -48,14 +49,17 @@ print(string_var.title())
 #
 alpha = "abc"
 digits = "123456789"
+#
 print(string_var.islower())
 print(string_var.isupper())
-print(control_name.isalpha())
+print(alpha.isalpha())
 print(digits[0].isdigit())
+print(alpha[0].isdigit())
 print(len(string_var))
 print("data length: {}".format(len(string_var)))
 
 # zfill(X) add "0" zeros to the left of a number as many X specified in function call
+# mesh = "C_geometryDummy_{}_MSH".format(str(1).zfill(3))
 mesh = "C_geometryDummy_{}_MSH".format(str(1).zfill(3))
 print(mesh)
 
@@ -65,8 +69,8 @@ for index in range(1, 101):
 
 # --------------------------------------------------------------------------
 # list methods
+
 # append & insert
-print("data length: {}".format(len(list_var)))
 
 # filling list
 new_list = []
@@ -75,29 +79,30 @@ print(new_list)
 new_list.append("newItems") # append a new element at the end of the list
 print(new_list)
 new_list.insert(2, "insertedItem") # insert a new element at the given index of the list
+print(new_list)
 
 # pop & remove
 abc_list = ["a", "b", "c", "d", "e", "f", "g", "h", "i"]
 print(abc_list)
 letter = abc_list.pop(0)
-print(letter)
+print(abc_list, letter)
 #
 abc_list.remove("b")
 print(abc_list)
 
 try:
-    abc_list.remove("HOME")
+    abc_list.remove("b")
 except:
     print("the value entered couldn't be found")
 
 #
-
 # reverse list
 lista = ["a", "b", "c", "d", "e", "f", "g", "h", "i"]
 print(lista)
 lista.reverse()
 print(lista)
 
+#
 copied_list = lista[:]
 print(copied_list)
 del copied_list[:]
@@ -115,6 +120,7 @@ print numbers
 
 #
 # sorted list
+
 abc = ["d", "c", "a", "b"]
 sorted_abc = sorted(abc)
 print(abc)
@@ -135,7 +141,6 @@ print(min(abc))
 
 # --------------------------------------------------------------------------
 # Dictionaries
-
 # empty:
 my_dictionary = {}
 
@@ -143,27 +148,26 @@ my_dictionary = {}
 my_dictionary["clave"] = "value"
 print(my_dictionary)
 
-
 # iterate over a list and fill dict with data
 new_dict = {}
 print(ascii_lowercase)
+
 
 for idx, letter in enumerate(ascii_lowercase): # enumerate returns a index number with current iteration
     new_dict[letter] = idx
 
 
-print(new_dict)
-
 for key, val in new_dict.items():
     print("Letter: {} -- IndexValue: {}".format(key, val))
 
 # accessing to elements from a dictionary
-j_letter_index =  new_dict["j"]
+j_letter_index = new_dict["j"]
 print(j_letter_index)
 
 #
 get_j_letter_index = new_dict.get("j", None)
 print(get_j_letter_index)
+
 
 # getting non existent elements in a dict
 any_value = new_dict["A"] # error if key doesn't exist in dictionary (stop code execution)
@@ -171,9 +175,11 @@ print(any_value)
 
 any_value = new_dict.get("A", None) # return what has been passed as second argument if key doesn't exists
 print(any_value)
+
 #
 if any_value is None:
     print(False)
+
 
 # -------------------------------------------------------
 
@@ -187,7 +193,7 @@ def add_int(a=0, b=0):
         print("Hey smart pants what you are trying to do is invalid.")
         return False
 #
-sumNums = add_int(15.897, "5")
+sumNums = add_int(5, 5, 5)
 print(sumNums)
 
 # ---------------------------------------------------------
@@ -197,9 +203,9 @@ print(sumNums)
 string_001 = "L" + "_" + "arm" + "_" + "CTL"
 print(string_001)
 #
-#
 upperArmControl = "L_upperArm" + "_CTL"
 print(upperArmControl)
+
 #
 arm = 'upperArm'
 prefix = 'L'
@@ -209,7 +215,6 @@ suffix = 'CTL'
 armControlName = prefix + "_" + arm + "_" + suffix
 print(armControlName)
 
-
 # option 2 (** RECOMENDED **)
 armControlName = "{}_{}_{}".format(prefix, arm, suffix)
 print(armControlName)
@@ -217,6 +222,7 @@ print(armControlName)
 # option 3
 armControlName = "_".join([prefix, arm, suffix])
 print(armControlName)
+
 
 ####################
 # List concatenation
@@ -228,14 +234,17 @@ print(concatenated_list)
 #
 concatenated_list = abc_002 + abc_001
 print(concatenated_list)
-concatenated_list.sort()
-print(concatenated_list)
+
+# extend method from list objects in python, same as concatenation but ina  destructive way
+# extends list that has been used as a source object with a parameter parsed in extend(LIST)
+abc_001.extend(abc_002)
+print(abc_001)
 
 # ------------------------------------------------------------------------------------------
 # sorting, concatenating and enumerating list in a for loop
 upper_letters = []
 lower_letters = []
-
+#
 for letter in sorted(abc_002 + abc_001):
     upper_letters.append(letter.upper())
     lower_letters.append(letter)
@@ -250,11 +259,8 @@ print(len(upper_letters), len(lower_letters))
 for low, up in zip(lower_letters, upper_letters):
     print("lowercase: {} --- uppercase: {}".format(low, up))
 
-
-
 # enumerate + zip (freaking this out a bit)
 for index, (low, up) in enumerate(zip(lower_letters, upper_letters)):
-    print("index: {} -- lowercase: {} --- uppercase: {}".format(index, low, up))
-
+    print("element: {} -- lowercase: {} --- uppercase: {}".format(str(index).zfill(3), low, up))
 
 # ------------------------------------------------------------------------------------------
